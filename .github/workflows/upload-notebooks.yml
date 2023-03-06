@@ -1,4 +1,4 @@
-name: TileDB-BioImaging CI
+name: Upload example notebooks to TileDB Cloud
 on:
   push:
     paths:
