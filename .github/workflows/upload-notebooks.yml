@@ -1,0 +1,62 @@
+name: TileDB-BioImaging CI
+on:
+  push:
+    paths:
+      - '.github/workflows/upload-notebooks.yml'
+      - 'examples/**'
+      - 'tiledb/**'
+      - 'setup.py'
+  pull_request:
+    paths:
+      - '.github/workflows/upload-notebooks.yml'
+      - 'examples/**'
+      - 'tiledb/**'
+      - 'setup.py'
+  workflow_dispatch:
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install Conda environment with Micromamba
+      uses: mamba-org/provision-with-micromamba@main
+      with:
+        environment-file: false
+        environment-name: test
+        channels: conda-forge
+        cache-downloads: true
+        extra-specs: |
+          imagecodecs
+          jsonpickle
+          matplotlib
+          nbmake
+          ome-zarr
+          opencv-python-headless
+          openslide-python
+          pip
+          pyeditdistance
+          pytest
+          python=3.7
+          setuptools-scm
+          tifffile
+          tiledb-py>=0.19
+          tqdm
+    - name: Install forked tifffile package
+      run: pip install --no-deps tifffile@git+https://github.com/TileDB-Inc/tifffile.git@gsa/python-3.7
+    - name: Install tiledb-bioimg package
+      run: |
+        pip install --no-deps pyeditdistance
+        pip install --no-deps .[full]
+    - name: Run notebook examples
+      run: pytest --nbmake examples
+  upload:
+    if: github.branch == 'main' && github.event_name != 'pull_request'
+    needs: run
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup
+      run: pip install tiledb-cloud
