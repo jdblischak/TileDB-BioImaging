@@ -12,6 +12,7 @@ dependencies:
   - fastai::opencv-python-headless
   - openslide-python
   - pip
+  - pyeditdistance
   - pytest
   - python
   - setuptools-scm
@@ -20,4 +21,3 @@ dependencies:
   - tqdm
   - pip:
     - tifffile@git+https://github.com/TileDB-Inc/tifffile.git@gsa/python-3.7
-    - pyeditdistance
