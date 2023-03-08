@@ -14,8 +14,8 @@
 
 import os
 import sys
-import tiledb.cloud
 
+import tiledb.cloud
 
 token = os.environ.get("TILEDB_CLOUD_TOKEN")
 namespace = os.environ.get("TILEDB_CLOUD_NAMESPACE")
