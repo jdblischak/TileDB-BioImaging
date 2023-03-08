@@ -20,7 +20,7 @@ import tiledb.cloud
 token = os.environ.get("TILEDB_CLOUD_TOKEN")
 namespace = os.environ.get("TILEDB_CLOUD_NAMESPACE")
 storage_path = os.environ.get("TILEDB_CLOUD_STORAGE_PATH")
-storage_path = os.environ.get("TILEDB_CLOUD_STORAGE_CREDENTIAL_NAME")
+storage_credential_name = os.environ.get("TILEDB_CLOUD_STORAGE_CREDENTIAL_NAME")
 
 tiledb.cloud.login(token=token)
 user = tiledb.cloud.user_profile()
