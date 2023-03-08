@@ -24,22 +24,22 @@ storage_credential_name = os.environ.get("TILEDB_CLOUD_STORAGE_CREDENTIAL_NAME")
 
 tiledb.cloud.login(token=token)
 user = tiledb.cloud.user_profile()
-sys.stdout.write("Logged into TileDB Cloud as %s\n"%(user.username))
+sys.stdout.write("Logged into TileDB Cloud as %s\n" % (user.username))
 
 args = sys.argv
-if (len(args) != 2):
+if len(args) != 2:
     sys.stderr.write("Usage: python upload-notebook.py <path/to/notebook.ipynb>\n")
     sys.exit(1)
 
 notebook = args[1]
 if not os.path.exists(notebook):
-    sys.stderr.write("Notebook file does not exist: %s\n"%(notebook))
+    sys.stderr.write("Notebook file does not exist: %s\n" % (notebook))
     sys.exit(1)
 
 notebook_name, ext = os.path.splitext(notebook)
 notebook_name = os.path.basename(notebook_name)
 if ext != ".ipynb":
-    sys.stderr.write("Notebook file extension must be '.ipynb', not '%s'\n"%(ext))
+    sys.stderr.write("Notebook file extension must be '.ipynb', not '%s'\n" % (ext))
     sys.exit(1)
 
 try:
