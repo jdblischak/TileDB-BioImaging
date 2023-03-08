@@ -2,12 +2,14 @@ name: Upload example notebooks to TileDB Cloud
 on:
   push:
     paths:
+      - '.github/scripts/environment.yml'
       - '.github/workflows/upload-notebooks.yml'
       - 'examples/**'
       - 'tiledb/**'
       - 'setup.py'
   pull_request:
     paths:
+      - '.github/scripts/environment.yml'
       - '.github/workflows/upload-notebooks.yml'
       - 'examples/**'
       - 'tiledb/**'
@@ -24,31 +26,10 @@ jobs:
     - name: Install Conda environment with Micromamba
       uses: mamba-org/provision-with-micromamba@main
       with:
-        environment-file: false
-        environment-name: test
-        channels: conda-forge, fastai
-        cache-downloads: true
-        extra-specs: |
-          imagecodecs
-          jsonpickle
-          matplotlib
-          nbmake
-          ome-zarr
-          fastai::opencv-python-headless
-          openslide-python
-          pip
-          pytest
-          python
-          setuptools-scm
-          tifffile
-          tiledb-py>=0.19
-          tqdm
-    - name: Install forked tifffile package
-      run: pip install --no-deps tifffile@git+https://github.com/TileDB-Inc/tifffile.git@gsa/python-3.7
+        environment-file: .github/scripts/environment.yml
+        cache-env: true
     - name: Install tiledb-bioimg package
-      run: |
-        pip install --no-deps pyeditdistance
-        pip install --no-deps .[full]
+      run: pip install --no-deps .[full]
     - name: Run notebook examples
       run: pytest --nbmake examples
   upload:
@@ -61,49 +42,14 @@ jobs:
     - name: Setup
       run: pip install tiledb-cloud
     - name: Upload notebooks
-      shell: python
       env:
         TILEDB_CLOUD_TOKEN: ${{ secrets.TILEDB_CLOUD_TOKEN }}
+        TILEDB_CLOUD_NAMESPACE: jdblischak
+        TILEDB_CLOUD_STORAGE_PATH: s3://tiledb-cloud-jdblischak/notebooks
+        TILEDB_CLOUD_STORAGE_CREDENTIAL_NAME: personal-aws
       run: |
-        import os
-        import tiledb.cloud
-
-        tiledb.cloud.login(token=os.environ.get("TILEDB_CLOUD_TOKEN"))
-
-        try:
-            tiledb.cloud.upload_notebook_from_file(
-                ipynb_file_name="examples/OMETiff-convertor-demo.ipynb",
-                namespace="jdblischak",
-                array_name="OMETiff-convertor-demo",
-                storage_path="s3://tiledb-cloud-jdblischak/notebooks",
-                storage_credential_name="personal-aws",
-                on_exists=tiledb.cloud.notebook.OnExists.OVERWRITE,
-            )
-        except tiledb.cc.TileDBError:
-            # If it's a new file, can't use OVERWRITE
-            tiledb.cloud.upload_notebook_from_file(
-                ipynb_file_name="examples/OMETiff-convertor-demo.ipynb",
-                namespace="jdblischak",
-                array_name="OMETiff-convertor-demo",
-                storage_path="s3://tiledb-cloud-jdblischak/notebooks",
-                storage_credential_name="personal-aws",
-            )
-
-        try:
-            tiledb.cloud.upload_notebook_from_file(
-                ipynb_file_name="examples/OMEZarr-convertor-demo.ipynb",
-                namespace="jdblischak",
-                array_name="OMEZarr-convertor-demo",
-                storage_path="s3://tiledb-cloud-jdblischak/notebooks",
-                storage_credential_name="personal-aws",
-                on_exists=tiledb.cloud.notebook.OnExists.OVERWRITE,
-            )
-        except tiledb.cc.TileDBError:
-            # If it's a new file, can't use OVERWRITE
-            tiledb.cloud.upload_notebook_from_file(
-                ipynb_file_name="examples/OMEZarr-convertor-demo.ipynb",
-                namespace="jdblischak",
-                array_name="OMEZarr-convertor-demo",
-                storage_path="s3://tiledb-cloud-jdblischak/notebooks",
-                storage_credential_name="personal-aws",
-            )
+        for notebook in examples/*.ipynb
+        do
+          echo "Uploading $notebook"
+          python .github/scripts/upload-notebook.py "$notebook"
+        done

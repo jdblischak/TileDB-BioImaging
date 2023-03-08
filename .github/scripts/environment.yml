@@ -1,0 +1,23 @@
+name: upload
+channels:
+  - conda-forge
+  - fastai
+  - nodefaults
+dependencies:
+  - imagecodecs
+  - jsonpickle
+  - matplotlib
+  - nbmake
+  - ome-zarr
+  - fastai::opencv-python-headless
+  - openslide-python
+  - pip
+  - pytest
+  - python
+  - setuptools-scm
+  - tifffile
+  - tiledb-py>=0.19
+  - tqdm
+  - pip:
+    - tifffile@git+https://github.com/TileDB-Inc/tifffile.git@gsa/python-3.7
+    - pyeditdistance
