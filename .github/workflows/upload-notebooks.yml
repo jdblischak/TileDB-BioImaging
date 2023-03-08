@@ -52,10 +52,38 @@ jobs:
     - name: Run notebook examples
       run: pytest --nbmake examples
   upload:
-    if: github.branch == 'main' && github.event_name != 'pull_request'
+    # remove filters for initial testing from a feature branch
+    #if: github.branch == 'main' && github.event_name != 'pull_request'
     needs: run
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Setup
       run: pip install tiledb-cloud
+    - name: Upload notebooks
+      shell: python
+      env:
+        TILEDB_CLOUD_TOKEN: ${{ secrets.TILEDB_CLOUD_TOKEN }}
+      run: |
+        import os
+        import tiledb.cloud
+
+        tiledb.cloud.login(token=os.environ.get("TILEDB_CLOUD_TOKEN"))
+
+        tiledb.cloud.upload_notebook_from_file(
+            ipynb_file_name="examples/OMETiff-convertor-demo.ipynb",
+            namespace="jdblischak",
+            array_name="OMETiff-convertor-demo",
+            storage_path="s3://tiledb-cloud-jdblischak/notebooks",
+            storage_credential_name="personal-aws",
+            on_exists=tiledb.cloud.notebook.OnExists.OVERWRITE
+        )
+
+        tiledb.cloud.upload_notebook_from_file(
+            ipynb_file_name="examples/OMEZarr-convertor-demo.ipynb",
+            namespace="jdblischak",
+            array_name="OMEZarr-convertor-demo",
+            storage_path="s3://tiledb-cloud-jdblischak/notebooks",
+            storage_credential_name="personal-aws",
+            on_exists=tiledb.cloud.notebook.OnExists.OVERWRITE
+        )
