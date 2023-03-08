@@ -70,20 +70,40 @@ jobs:
 
         tiledb.cloud.login(token=os.environ.get("TILEDB_CLOUD_TOKEN"))
 
-        tiledb.cloud.upload_notebook_from_file(
-            ipynb_file_name="examples/OMETiff-convertor-demo.ipynb",
-            namespace="jdblischak",
-            array_name="OMETiff-convertor-demo",
-            storage_path="s3://tiledb-cloud-jdblischak/notebooks",
-            storage_credential_name="personal-aws",
-            on_exists=tiledb.cloud.notebook.OnExists.OVERWRITE
-        )
+        try:
+            tiledb.cloud.upload_notebook_from_file(
+                ipynb_file_name="examples/OMETiff-convertor-demo.ipynb",
+                namespace="jdblischak",
+                array_name="OMETiff-convertor-demo",
+                storage_path="s3://tiledb-cloud-jdblischak/notebooks",
+                storage_credential_name="personal-aws",
+                on_exists=tiledb.cloud.notebook.OnExists.OVERWRITE,
+            )
+        except tiledb.cc.TileDBError:
+            # If it's a new file, can't use OVERWRITE
+            tiledb.cloud.upload_notebook_from_file(
+                ipynb_file_name="examples/OMETiff-convertor-demo.ipynb",
+                namespace="jdblischak",
+                array_name="OMETiff-convertor-demo",
+                storage_path="s3://tiledb-cloud-jdblischak/notebooks",
+                storage_credential_name="personal-aws",
+            )
 
-        tiledb.cloud.upload_notebook_from_file(
-            ipynb_file_name="examples/OMEZarr-convertor-demo.ipynb",
-            namespace="jdblischak",
-            array_name="OMEZarr-convertor-demo",
-            storage_path="s3://tiledb-cloud-jdblischak/notebooks",
-            storage_credential_name="personal-aws",
-            on_exists=tiledb.cloud.notebook.OnExists.OVERWRITE
-        )
+        try:
+            tiledb.cloud.upload_notebook_from_file(
+                ipynb_file_name="examples/OMEZarr-convertor-demo.ipynb",
+                namespace="jdblischak",
+                array_name="OMEZarr-convertor-demo",
+                storage_path="s3://tiledb-cloud-jdblischak/notebooks",
+                storage_credential_name="personal-aws",
+                on_exists=tiledb.cloud.notebook.OnExists.OVERWRITE,
+            )
+        except tiledb.cc.TileDBError:
+            # If it's a new file, can't use OVERWRITE
+            tiledb.cloud.upload_notebook_from_file(
+                ipynb_file_name="examples/OMETiff-convertor-demo.ipynb",
+                namespace="jdblischak",
+                array_name="OMETiff-convertor-demo",
+                storage_path="s3://tiledb-cloud-jdblischak/notebooks",
+                storage_credential_name="personal-aws",
+            )
