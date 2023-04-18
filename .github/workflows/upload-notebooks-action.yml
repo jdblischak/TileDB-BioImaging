@@ -20,7 +20,7 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v3
     - name: Upload notebooks
-      uses: jdblischak/github-actions/upload-notebooks@upload-notebooks
+      uses: jdblischak/github-actions/upload-notebooks@upload-notebooks-pr
       with:
         notebooks: examples/OMETiff-convertor-demo.ipynb examples/OMEZarr-convertor-demo.ipynb
         TILEDB_CLOUD_TOKEN: ${{ secrets.TILEDB_CLOUD_TOKEN }}
