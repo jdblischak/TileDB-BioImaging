@@ -22,8 +22,7 @@ jobs:
     - name: Upload notebooks
       uses: jdblischak/github-actions/upload-notebooks@upload-notebooks-pr
       with:
-        notebooks: examples/OMETiff-convertor-demo.ipynb examples/OMEZarr-convertor-demo.ipynb
+        notebooks_local: examples/OMETiff-convertor-demo.ipynb examples/OMEZarr-convertor-demo.ipynb
+        notebooks_remote: tiledb://s3://tiledb-cloud-jdblischak/notebooks/OMETiff-convertor-demo tiledb://s3://tiledb-cloud-jdblischak/notebooks/OMEZarr-convertor-demo
         TILEDB_CLOUD_TOKEN: ${{ secrets.TILEDB_CLOUD_TOKEN }}
-        TILEDB_CLOUD_NAMESPACE: jdblischak
-        TILEDB_CLOUD_STORAGE_PATH: s3://tiledb-cloud-jdblischak/notebooks
         TILEDB_CLOUD_STORAGE_CREDENTIAL_NAME: personal-aws
